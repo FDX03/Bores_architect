@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>BORES | Login</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="login-body">
+
+<div class="login-card">
+  <h1>BORES ARCH</h1>
+  <p>Arquitectura & Diseño</p>
+
+  <input id="user" placeholder="Usuario">
+  <input id="pass" type="password" placeholder="Contraseña">
+  <button onclick="login()">Entrar</button>
+
+  <a href="https://www.instagram.com/bores_arch" target="_blank">
+    Instagram @bores_arch
+  </a>
+</div>
+
+<script>
+function login() {
+  fetch("/api/login", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      username: user.value,
+      password: pass.value
+    })
+  })
+  .then(res => {
+    if (!res.ok) throw "error";
+    sessionStorage.setItem("auth","true");
+    location.href = "projects.html";
+  })
+  .catch(() => alert("Credenciales incorrectas"));
+}
+</script>
+
+</body>
+</html>

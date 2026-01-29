@@ -1,22 +1,35 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const cors = require("cors");
-require("dotenv").config();
+const db = require("./db");
 
 const app = express();
-
 app.use(cors());
 app.use(express.json());
+app.use(express.static("../frontend"));
 
-// 👇 routes en singular
-app.use("/api/projects", require("./routes/label"));
+/* LOGIN */
+app.post("/api/login", (req, res) => {
+  const { username, password } = req.body;
+  console.log("LOGIN:", username, password);
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB conectado"))
-  .catch(err => console.error("Error MongoDB:", err));
+  if (username === "fdbortoni" && password === "Fede2001") {
+    return res.json({ success: true });
+  }
+  res.status(401).json({ success: false });
+});
 
-const PORT = process.env.PORT || 3000;
+/* PROYECTOS */
+app.get("/api/projects", (req, res) => {
+  db.query("SELECT * FROM projectss", (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Error al obtener proyectos" });
+    }
+    res.json(results);
+  });
+});
 
+const PORT = 3000;
 app.listen(PORT, () => {
-  console.log(`Servidor activo en puerto ${PORT}`);
+  console.log("Servidor activo en puerto", PORT);
 });
